@@ -1,0 +1,267 @@
+/* ==========================================================
+   1. EASY SETTINGS - change colours and sizes here
+   ========================================================== */
+:root {
+  --background: #ffffee;   /* page background */
+  --post-bg:    #ffffee;   /* popup background */
+  --text:       #0c0055;   /* normal text */
+  --title:      #100077;   /* titles and bold text */
+  --hover:      #ccc900;   /* link hover colour */
+  --post-height: 300px;    /* 250px, 300px or 350px like the original */
+  --gap:         50px;     /* space between posts */
+  --side-space: 100px;     /* space at the left and right ends */
+}
+
+/* ==========================================================
+   2. BASICS
+   ========================================================== */
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font: 400 11px/1.5em "Outfit", sans-serif, Arial;
+  letter-spacing: 0.25px;
+  overflow-x: auto;      /* this is what gives the horizontal scroll */
+  overflow-y: hidden;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.3s linear;
+}
+a:hover { color: var(--hover); }
+
+/* ==========================================================
+   3. HEADER (title + descriptor + optional links)
+   Stays fixed in the top left while the posts scroll.
+   ========================================================== */
+header {
+  position: fixed;
+  left: var(--side-space);
+  top: calc(50vh - var(--post-height) / 2);
+  transform: translateY(-100%);   /* sits just above the posts */
+  padding-bottom: 50px;
+  z-index: 3;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--title);
+}
+
+header p { margin: 5px 0 0 0; }
+
+nav { margin-top: 15px; }
+nav a { margin-right: 10px; }
+
+/* ==========================================================
+   4. THE HORIZONTAL ROW OF POSTS
+   ========================================================== */
+.gallery {
+  display: flex;
+  align-items: center;        /* centres the posts up and down */
+  gap: var(--gap);
+  width: max-content;         /* lets the row grow wider than the screen */
+  min-height: 100vh;
+  padding: 0 var(--side-space);
+  box-sizing: border-box;
+}
+
+.post { flex-shrink: 0; }
+
+/* ==========================================================
+   5. THE IMAGE + FULL-SCREEN POPUP
+   Click an image and the popup covers the whole page.
+   Click the X to close it.
+   ========================================================== */
+.toggle { display: none; }        /* hidden checkbox that powers the click */
+
+.frame {
+  display: block;
+  height: var(--post-height);
+  background: var(--post-bg);
+  cursor: pointer;
+}
+
+.frame img {
+  display: block;
+  height: var(--post-height);     /* width adjusts automatically */
+  transition: opacity 0.3s linear;
+}
+.frame:hover img { opacity: 0.5; }   /* change 0.5 to fade more or less */
+
+.popup {
+  position: fixed;                /* fixed = covers the whole screen */
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  display: flex;
+  align-items: center;            /* centres the text */
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.97);
+  opacity: 0;                     /* hidden until clicked */
+  pointer-events: none;
+  transition: opacity 0.3s linear;
+}
+
+.popup-text {
+  max-width: 500px;
+  padding: 25px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.popup h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--title);
+}
+.popup p { margin: 0 0 10px 0; }
+
+/* Extra images inside the popup fit the popup's width */
+.popup img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 15px 0;
+}
+
+/* YouTube (or other) video embeds, keeps a 16:9 shape */
+.popup iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  margin: 15px 0;
+}
+
+/* The X button in the top right */
+.close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-size: 18px;
+  color: var(--title);
+  cursor: pointer;
+  transition: color 0.3s linear;
+}
+.close:hover { color: var(--hover); }
+
+/* Checkbox checked = show the popup */
+.toggle:checked ~ .popup { opacity: 1; pointer-events: auto; }
+
+/* ==========================================================
+   6. ENTRY NUMBER UNDER EACH POST
+   Number on the left. On hover it goes from 50% to full opacity and the date
+   appears on the right.
+   ========================================================== */
+.entry {
+  display: flex;
+  cursor: pointer;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 0;
+}
+
+.date {
+  opacity: 0;                      /* hidden until hover */
+  transition: opacity 0.3s linear;
+}
+
+.number {
+  opacity: 0.5;                    /* starts at 50% */
+  transition: opacity 0.3s linear;
+}
+
+.entry:hover .date   { opacity: 1; }
+.entry:hover .number { opacity: 1; }
+
+/* ==========================================================
+   6b. CREDITS LINK + SMALL POPUP
+   Link sits in the bottom left. Click it to open a small popup,
+   click anywhere on the screen to close it.
+   ========================================================== */
+.credits-link {
+  position: fixed;
+  left: var(--side-space);
+  bottom: 0;
+  padding: 10px 0;
+  z-index: 5;
+  cursor: pointer;
+  transition: color 0.3s linear;
+}
+.credits-link:hover { color: var(--hover); }
+
+.credits-overlay {
+  position: fixed;               /* invisible layer that catches the "click anywhere" */
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s linear;
+}
+
+.credits-box {
+  position: absolute;            /* the small popup itself */
+  left: var(--side-space);
+  bottom: 50px;
+  width: 260px;
+  padding: 20px 25px;
+  background: var(--post-bg);
+  border: 1px solid #e4e4e4;
+  cursor: pointer;
+}
+.credits-box h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--title);
+}
+.credits-box p { margin: 0 0 5px 0; }
+
+#credits-toggle:checked ~ .credits-overlay { opacity: 1; pointer-events: auto; }
+
+/* Lighter text in the bottom right, lines up with the credits link */
+.footer-text {
+  position: fixed;
+  right: var(--side-space);
+  bottom: 0;
+  padding: 10px 0;      /* same as .credits-link so they line up */
+  z-index: 5;
+  opacity: 0.5;         /* the lighter look - change to taste */
+}
+
+/* ==========================================================
+   7. PHONES - posts stack vertically instead
+   ========================================================== */
+@media screen and (max-width: 800px) {
+  body { overflow-y: auto; overflow-x: hidden; }
+  header { position: relative; top: auto; left: 0; transform: none; padding: 40px 10vw 0 10vw; }
+  .gallery { flex-direction: column; width: auto; min-height: 0; padding: 30px 10vw 70px 10vw; }
+  .post { width: 100%; }
+  .credits-link, .credits-box { left: 10vw; }
+  .footer-text { right: 10vw; }
+  .frame { height: auto; }
+  .frame img { width: 100%; height: auto; }
+}
+
+/* Click the edges of the popup to close it */
+.popup-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.popup .popup-text { position: relative; }
+
+/* Scrolling inside a popup never scrolls the page behind it */
+.popup-text { overscroll-behavior: contain; }
